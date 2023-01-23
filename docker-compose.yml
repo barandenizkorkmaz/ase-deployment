@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  ase-registery:
+    build:
+      context: ./registry-service/
+    ports:
+      - 8761:8761
+    restart: always
+    container_name: aseregistery
+    hostname: aseregistery
+    networks:
+      - app
+  ase-gateway:
+    build:
+      context: ./gateway/
+    ports:
+      - 10789:10789
+    restart: always
+    container_name: asegateway
+    hostname: asegateway
+    networks:
+      - app
+  ase-delivery:
+    build:
+      context: ./delivery-service/
+    ports:
+      - 8082:8082
+    restart: always
+    container_name: asedelivery
+    hostname: asedelivery
+    networks:
+      - app
+  ase-auth:
+    build:
+      context: ./authentication-service/
+    ports:
+      - 8081:8081
+    restart: always
+    container_name: aseauth
+    hostname: aseauth
+    networks:
+      - app
+  ase-frontend:
+    container_name: asefrontend
+    build:
+      context: ./frontend_v2/
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - 3000:3000
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+networks:
+  app:
