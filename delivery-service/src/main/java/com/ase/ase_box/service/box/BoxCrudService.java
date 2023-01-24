@@ -2,17 +2,10 @@ package com.ase.ase_box.service.box;
 
 import com.ase.ase_box.data.dto.BoxDto;
 import com.ase.ase_box.data.entity.Box;
-import com.ase.ase_box.data.entity.Delivery;
 import com.ase.ase_box.data.request.box.*;
-import com.ase.ase_box.data.request.delivery.IsCreateDeliveryValidRequest;
 import com.ase.ase_box.data.response.box.CreateBoxResponse;
 import com.ase.ase_box.data.response.box.DeleteBoxResponse;
 import com.ase.ase_box.data.response.box.UpdateBoxResponse;
-import com.ase.ase_box.data.response.delivery.CreateDeliveryResponse;
-import com.ase.ase_box.data.response.delivery.DeleteDeliveryResponse;
-import com.ase.ase_box.data.response.delivery.UpdateDeliveryResponse;
-import com.ase.ase_box.service.delivery.DeliveryCrudService;
-import com.ase.ase_box.service.delivery.IDeliveryCrudService;
 import com.ase.ase_box.service.delivery.IDeliveryEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.ase.ase_box.data.mapper.BoxMapper.BOX_MAPPER;
-import static com.ase.ase_box.data.mapper.DeliveryMapper.DELIVERY_MAPPER;
 
 @Service
 @RequiredArgsConstructor
@@ -58,11 +50,13 @@ public class BoxCrudService implements IBoxCrudService {
     }
 
     @Override
-    public DeleteBoxResponse deleteBox(String id) {
+    public DeleteBoxResponse deleteBox(String id) throws Exception {
         boolean isSuccessful = false;
         if(boxEntityService.isBoxExists(id)){
             boxEntityService.deleteBoxById(id);
             isSuccessful = true;
+        }else{
+            throw new Exception();
         }
         return DeleteBoxResponse
                 .builder()
@@ -71,7 +65,7 @@ public class BoxCrudService implements IBoxCrudService {
     }
 
     @Override
-    public UpdateBoxResponse updateBox(String id, UpdateBoxRequest updateBoxRequest) {
+    public UpdateBoxResponse updateBox(String id, UpdateBoxRequest updateBoxRequest) throws Exception {
         boolean isValid = boxEntityService.isUpdateBoxValid(
                 id,
                 IsUpdateBoxValidRequest.builder()
@@ -84,6 +78,8 @@ public class BoxCrudService implements IBoxCrudService {
                     .orElseThrow(IllegalArgumentException::new);
             BOX_MAPPER.updateBox(box, updateBoxRequest);
             boxEntityService.updateBox(box);
+        }else{
+            throw new Exception();
         }
         return UpdateBoxResponse
                 .builder()

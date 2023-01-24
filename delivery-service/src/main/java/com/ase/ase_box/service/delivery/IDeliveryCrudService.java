@@ -14,11 +14,11 @@ import java.util.List;
 
 public interface IDeliveryCrudService {
 
-    CreateDeliveryResponse createDelivery(CreateDeliveryRequest createDeliveryRequest);
+    CreateDeliveryResponse createDelivery(CreateDeliveryRequest createDeliveryRequest) throws Exception;
 
-    UpdateDeliveryResponse updateDelivery(String id, UpdateDeliveryRequest updateDeliveryRequest);
+    UpdateDeliveryResponse updateDelivery(String id, UpdateDeliveryRequest updateDeliveryRequest) throws Exception;
 
-    DeleteDeliveryResponse deleteDelivery(String deliveryId);
+    DeleteDeliveryResponse deleteDelivery(String deliveryId) throws Exception;
 
     DeliveryDto getDelivery(String deliveryId);
 

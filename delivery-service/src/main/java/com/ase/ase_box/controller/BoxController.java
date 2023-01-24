@@ -40,12 +40,20 @@ public class BoxController {
 
     @PutMapping("update/{id}")
     public ResponseEntity<UpdateBoxResponse> updateBox(@PathVariable("id") String id, @RequestBody UpdateBoxRequest updateBoxRequest) {
-        return ResponseEntity.ok(boxCrudService.updateBox(id, updateBoxRequest));
+        try {
+            return ResponseEntity.ok(boxCrudService.updateBox(id, updateBoxRequest));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("delete/{id}")
     public ResponseEntity<DeleteBoxResponse> deleteBox(@PathVariable("id") String id) {
-        return ResponseEntity.ok(boxCrudService.deleteBox(id));
+        try {
+            return ResponseEntity.ok(boxCrudService.deleteBox(id));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/unlock/{id}")

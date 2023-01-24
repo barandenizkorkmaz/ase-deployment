@@ -24,7 +24,7 @@ public class DeliveryCrudService implements IDeliveryCrudService{
     private final DeliveryEntityService deliveryEntityService;
 
     @Override
-    public CreateDeliveryResponse createDelivery(CreateDeliveryRequest createDeliveryRequest) {
+    public CreateDeliveryResponse createDelivery(CreateDeliveryRequest createDeliveryRequest) throws Exception {
         boolean isValid = deliveryEntityService.isCreateDeliveryValid(
                 IsCreateDeliveryValidRequest.builder()
                         .boxId(createDeliveryRequest.getBoxId())
@@ -33,6 +33,8 @@ public class DeliveryCrudService implements IDeliveryCrudService{
         );
         if(isValid){
             deliveryEntityService.saveDelivery(createDeliveryRequest);
+        }else{
+            throw new Exception();
         }
         return CreateDeliveryResponse
                 .builder()
@@ -41,11 +43,13 @@ public class DeliveryCrudService implements IDeliveryCrudService{
     }
 
     @Override
-    public DeleteDeliveryResponse deleteDelivery(String id) {
+    public DeleteDeliveryResponse deleteDelivery(String id) throws Exception {
         boolean isSuccessful = false;
         if(deliveryEntityService.isDeliveryExists(id)){
             deliveryEntityService.deleteDeliveryById(id);
             isSuccessful = true;
+        }else{
+            throw new Exception();
         }
         return DeleteDeliveryResponse
                 .builder()
@@ -54,7 +58,7 @@ public class DeliveryCrudService implements IDeliveryCrudService{
     }
 
     @Override
-    public UpdateDeliveryResponse updateDelivery(String id, UpdateDeliveryRequest updateDeliveryRequest) {
+    public UpdateDeliveryResponse updateDelivery(String id, UpdateDeliveryRequest updateDeliveryRequest) throws Exception {
         boolean isValid = deliveryEntityService.isUpdateDeliveryValid(
                 id,
                 IsUpdateDeliveryValidRequest.builder()
@@ -67,6 +71,8 @@ public class DeliveryCrudService implements IDeliveryCrudService{
                     .orElseThrow(IllegalArgumentException::new);
             DELIVERY_MAPPER.updateDelivery(delivery, updateDeliveryRequest);
             deliveryEntityService.updateDelivery(delivery);
+        }else{
+            throw new Exception();
         }
         return UpdateDeliveryResponse
                 .builder()

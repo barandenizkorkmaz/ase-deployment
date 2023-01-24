@@ -14,9 +14,9 @@ public interface IBoxCrudService {
 
     CreateBoxResponse createBox(CreateBoxRequest createBoxRequest);
 
-    UpdateBoxResponse updateBox(String id, UpdateBoxRequest updateBoxRequest);
+    UpdateBoxResponse updateBox(String id, UpdateBoxRequest updateBoxRequest) throws Exception;
 
-    DeleteBoxResponse deleteBox(String id);
+    DeleteBoxResponse deleteBox(String id) throws Exception;
 
     BoxDto getBoxById(String boxId);
 
