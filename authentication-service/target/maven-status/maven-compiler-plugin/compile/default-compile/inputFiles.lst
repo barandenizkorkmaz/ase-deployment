@@ -7,7 +7,6 @@
 /home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/service/AuthenticationService.java
 /home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/security/SecurityConstants.java
 /home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/data/entity/User.java
-/home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/security/SecurityController.java
 /home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/data/dto/UserDto.java
 /home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/data/request/LoginRequest.java
 /home/denizkorkmaz/Git/ASE-Team3/deployment/authentication-service/src/main/java/com/ase/authenticationservice/security/jwt/JwtUtil.java
