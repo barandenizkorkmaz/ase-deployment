@@ -1,9 +1,9 @@
 FROM openjdk:17
-# set working directory
-WORKDIR /build
-# Copy the jar package into the container
-ADD ./target/authentication-service-0.0.1-SNAPSHOT.jar ./test.jar
-# Expose port 8080
+
+ARG JAR_FILE=target/*.jar
+
+COPY ${JAR_FILE} app.jar
+
 EXPOSE 8081
-# Run the jar package
-CMD java -jar test.jar
+
+ENTRYPOINT ["java","-jar","/app.jar"]

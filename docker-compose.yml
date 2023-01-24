@@ -1,57 +1,58 @@
-version: '3'
+version: "3"
 
 services:
-  ase-registery:
-    build:
-      context: ./registry-service/
-    ports:
-      - 8761:8761
+  mongo:
+    image: "mongo"
     restart: always
-    container_name: aseregistery
-    hostname: aseregistery
-    networks:
-      - app
-  ase-gateway:
-    build:
-      context: ./gateway/
     ports:
-      - 10789:10789
+      - "27017:27017"
+
+  registry-service:
+    container_name: registry-service
     restart: always
-    container_name: asegateway
-    hostname: asegateway
-    networks:
-      - app
-  ase-delivery:
     build:
-      context: ./delivery-service/
+      context: ./registry-service
+      dockerfile: Dockerfile
     ports:
-      - 8082:8082
+      - "8761:8761"
+
+  gateway:
+    container_name: gateway
     restart: always
-    container_name: asedelivery
-    hostname: asedelivery
-    networks:
-      - app
-  ase-auth:
     build:
-      context: ./authentication-service/
+      context: ./gateway
+      dockerfile: Dockerfile
     ports:
-      - 8081:8081
+      - "10789:10789"
+
+  authentication-service:
+    container_name: authentication-service
     restart: always
-    container_name: aseauth
-    hostname: aseauth
-    networks:
-      - app
-  ase-frontend:
-    container_name: asefrontend
     build:
-      context: ./frontend_v2/
+      context: ./authentication-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+
+  delivery-service:
+    container_name: delivery-service
+    restart: always
+    build:
+      context: ./delivery-service
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+
+  frontend:
+    container_name: frontend
+    restart: always
+    build:
+      context: ./frontend_v2
       dockerfile: Dockerfile
     volumes:
       - '.:/app'
       - '/app/node_modules'
     ports:
-      - 3000:3000
+      - "3000:3000"
     environment:
       - CHOKIDAR_USEPOLLING=true
-networks:
-  app:
