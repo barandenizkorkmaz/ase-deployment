@@ -1,4 +1,20 @@
 import axios from "axios"
+import { loadState } from "../localstorage/LocalStorage";
+
+export const instanceOfAxious = axios.create();
+
+instanceOfAxious.interceptors.request.use(
+    function(config) {
+      const token = loadState("token"); 
+      if (token) {
+        config.headers["Authorization"] = 'Bearer ' + token;
+      }
+      return config;
+    },
+    function(error) {
+      return Promise.reject(error);
+    }
+);
 
 /*
 

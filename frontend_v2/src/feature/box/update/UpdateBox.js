@@ -4,6 +4,7 @@ import { Row, Container } from 'react-bootstrap';
 import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
+import { instanceOfAxious } from '../../../network/requests';
 
 
 export class UpdateBox extends Component {
@@ -15,7 +16,9 @@ export class UpdateBox extends Component {
             boxId: "",
             name: "",
             raspberryId: "",
-            address: ""
+            address: "",
+            selectedBox: {},
+            boxes: [],
         };
         this.handleChangeSearchBoxId = this.handleChangeSearchBoxId.bind(this);
         this.handleChangeName = this.handleChangeName.bind(this);
@@ -23,28 +26,67 @@ export class UpdateBox extends Component {
         this.handleChangeAddress = this.handleChangeAddress.bind(this);
         this.updateBoxRequest = this.updateBoxRequest.bind(this);
         this.getBoxRequest = this.getBoxRequest.bind(this);
+        this.getBoxes();
+    }
+
+    getBoxes() {
+        instanceOfAxious.get("/box/list/all")
+            .then(
+                (response) => {
+                    this.setState(
+                        { 
+                            boxes: [...response.data],
+                            selectedBox: response.data[0]
+                        }
+                    )
+                    console.log(this.state.deliveries);
+                }
+            )
+            .catch(
+                (error) => {
+                    console.log(error)
+                }
+            )
     }
 
     handleChangeSearchBoxId(event) {
-        this.setState({ searchBoxId: event.target.value });
+        this.setState({
+            searchBoxId: event.target.value,
+            selectedBox: this.state.boxes.find(index => index["id"] === event.target.value)
+        });
     }
 
     handleChangeName(event) {
-        this.setState({ name: event.target.value });
+        this.setState({
+            selectedBox: {
+                ...this.state.selectedBox,
+                name: event.target.value
+            }
+        });
     }
 
     handleChangeRaspberryId(event) {
-        this.setState({ raspberryId: event.target.value });
+        this.setState({
+            selectedBox: {
+                ...this.state.selectedBox,
+                raspberryId: event.target.value
+            }
+        });
     }
 
     handleChangeAddress(event) {
-        this.setState({ address: event.target.value });
+        this.setState({
+            selectedBox: {
+                ...this.state.selectedBox,
+                address: event.target.value
+            }
+        });
     }
 
     getBoxRequest(event) {
         event.preventDefault();
         const id = this.state.searchBoxId
-        axios.get("list/" + id)
+        instanceOfAxious.get("list/" + id)
             .then(
                 (response) => {
                     console.log(response)
@@ -67,7 +109,13 @@ export class UpdateBox extends Component {
     updateBoxRequest(event) {
         event.preventDefault();
         const id = this.state.boxId
-        axios.put("/box/update/" + id, this.state)
+        let updateUrl = "/box/update/" + this.state.selectedBox["id"]
+        instanceOfAxious.put(updateUrl,
+            { 
+                name: this.state.selectedBox["name"],
+                address: this.state.selectedBox["address"]
+            }
+        )
             .then(
                 (response) => {
                     console.log(response)
@@ -85,33 +133,22 @@ export class UpdateBox extends Component {
     render() {
         return <Container >
             <Row className="justify-content-md-center mt-5" xs={6} md={2}>
-                <Form onSubmit={this.getBoxRequest}>
-                    <Form.Group className="mb-3" >
-                        <Form.Label>Box ID</Form.Label>
-                        <Form.Control type="text" placeholder="Enter id" value={this.state.searchBoxId} onChange={this.handleChangeSearchBoxId} />
-                    </Form.Group>
-                    <div className="d-grid gap-2">
-                        <Button variant="primary" type="submit" size="lg">
-                            Get Box
-                        </Button>
-                    </div>
-                </Form>
                 <Form onSubmit={this.updateBoxRequest}>
                     <Form.Group className="mb-3" >
                         <Form.Label>Box ID</Form.Label>
-                        <Form.Control type="text" placeholder="Box id" value={this.state.boxId} disabled />
+                        <Form.Select aria-label="Default select example" onChange={this.handleChangeSearchBoxId}>
+                            {this.state.boxes.map(function (object, i) {
+                                return <option key={i} value={object["id"]}> {object["id"]} </option>;
+                            })}
+                        </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3" >
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="Name" value={this.state.name} onChange={this.handleChangeName} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Raspberry ID</Form.Label>
-                        <Form.Control type="text" placeholder="Raspberry id" value={this.state.raspberryId} onChange={this.handleChangeRaspberryId} />
+                        <Form.Control type="text" placeholder="Name" value={this.state.selectedBox["name"]} onChange={this.handleChangeName} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Address</Form.Label>
-                        <Form.Control type="text" placeholder="Address" value={this.state.address} onChange={this.handleChangeAddress} />
+                        <Form.Control type="text" placeholder="Address" value={this.state.selectedBox["address"]} onChange={this.handleChangeAddress} />
                     </Form.Group>
                     <div className="d-grid gap-2">
                         <Button variant="primary" type="submit" size="lg">

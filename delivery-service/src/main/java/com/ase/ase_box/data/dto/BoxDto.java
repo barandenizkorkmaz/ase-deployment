@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class BoxDto {
     private String id;
     private String address;
-    private String raspberryId;
     private String name;
 }

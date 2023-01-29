@@ -1,16 +1,20 @@
 package com.ase.ase_box.controller;
 
 import com.ase.ase_box.data.dto.DeliveryDto;
+import com.ase.ase_box.data.entity.Delivery;
 import com.ase.ase_box.data.request.delivery.CreateDeliveryRequest;
 import com.ase.ase_box.data.request.delivery.AttemptDeliveryRequest;
 import com.ase.ase_box.data.request.delivery.UpdateDeliveryRequest;
 import com.ase.ase_box.data.response.delivery.CreateDeliveryResponse;
 import com.ase.ase_box.data.response.delivery.DeleteDeliveryResponse;
+import com.ase.ase_box.data.response.delivery.GetDeliveriesResponse;
 import com.ase.ase_box.data.response.delivery.UpdateDeliveryResponse;
 import com.ase.ase_box.service.delivery.DeliveryCrudService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +31,9 @@ public class DeliveryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/create")  // TODO: 25.01.2023 Distpacher
+    @PreAuthorize("hasAuthority('DISPATCHER')")
     public ResponseEntity<CreateDeliveryResponse> createDelivery(@RequestBody CreateDeliveryRequest createDeliveryRequest){
-        /*
-            TODO: 30.12.2022 The creation of delivery should be allowed for a second customer if the first customer is
-            done with the box.
-         */
         try {
             return ResponseEntity.ok(deliveryCrudService.createDelivery(createDeliveryRequest));
         }catch (Exception exception){
@@ -40,17 +41,27 @@ public class DeliveryController {
         }
     }
 
-    @GetMapping("/list/{id}")
+    @GetMapping("/list/{id}")  // TODO: 25.01.2023 Distpacher
+    @PreAuthorize("hasAuthority('DISPATCHER')")
     public ResponseEntity<DeliveryDto> getDelivery(@PathVariable("id") String id){
         return ResponseEntity.ok(deliveryCrudService.getDelivery(id));
     }
 
-    @GetMapping("/list/dispatcher/all")
+    @GetMapping("{id}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    public ResponseEntity<String> getDeliveryById(@PathVariable("id") String id){
+        DeliveryDto deliveryDto = deliveryCrudService.getDeliveryForCustomer(id);
+        return ResponseEntity.ok(deliveryDto.getDeliveryStatus().name());
+    }
+
+    @GetMapping("/list/dispatcher/all")  // TODO: 25.01.2023 Distpacher
+    @PreAuthorize("hasAuthority('DISPATCHER')")
     public ResponseEntity<List<DeliveryDto>> getDeliveries(){
         return ResponseEntity.ok(deliveryCrudService.getDeliveries());
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")  // TODO: 25.01.2023 Distpacher
+    @PreAuthorize("hasAuthority('DISPATCHER')")
     public ResponseEntity<DeleteDeliveryResponse> deleteDelivery(@PathVariable("id") String id){
         try{
             return ResponseEntity.ok(deliveryCrudService.deleteDelivery(id));
@@ -59,7 +70,8 @@ public class DeliveryController {
         }
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/update/{id}")  // TODO: 25.01.2023 Distpacher
+    @PreAuthorize("hasAuthority('DISPATCHER')")
     public ResponseEntity<UpdateDeliveryResponse> updateDelivery(@PathVariable("id") String id, @RequestBody UpdateDeliveryRequest updateDeliveryRequest){
         try {
             return ResponseEntity.ok(deliveryCrudService.updateDelivery(id, updateDeliveryRequest));
@@ -68,34 +80,40 @@ public class DeliveryController {
         }
     }
 
-    @GetMapping("list/deliverer/{delivererId}")
-    public ResponseEntity<List<DeliveryDto>> getDeliveriesByDeliverer(@PathVariable("delivererId") String delivererId){
+    @GetMapping("list/deliverer/{delivererId}")  // TODO: 25.01.2023 Delivere
+    @PreAuthorize("hasAuthority('DELIVERER')")
+    public ResponseEntity<List<GetDeliveriesResponse>> getDeliveriesByDeliverer(@PathVariable("delivererId") String delivererId){
         return ResponseEntity.ok(deliveryCrudService.getDeliveriesByDelivererId(delivererId));
     }
 
-    @GetMapping("list/customer/all/{customerId}")
-    public ResponseEntity<List<DeliveryDto>> getDeliveriesByCustomer(@PathVariable("customerId") String customerId){
+    @GetMapping("list/customer/all/{customerId}")  // TODO: 25.01.2023 Customer
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    public ResponseEntity<List<GetDeliveriesResponse>> getDeliveriesByCustomer(@PathVariable("customerId") String customerId){
         return ResponseEntity.ok(deliveryCrudService.getDeliveriesByCustomerId(customerId));
     }
 
-    @GetMapping("list/customer/active/{customerId}")
+    @GetMapping("list/customer/active/{customerId}")  // TODO: 25.01.2023 Customer
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<List<DeliveryDto>> getActiveDeliveriesByCustomer(@PathVariable("customerId") String customerId){
         return ResponseEntity.ok(deliveryCrudService.getActiveDeliveriesByCustomerId(customerId));
     }
 
-    @GetMapping("list/customer/past/{customerId}")
+    @GetMapping("list/customer/past/{customerId}")  // TODO: 25.01.2023 Customer
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     public ResponseEntity<List<DeliveryDto>> getPastDeliveriesByCustomer(@PathVariable("customerId") String customerId){
         return ResponseEntity.ok(deliveryCrudService.getPastDeliveriesByCustomerId(customerId));
     }
 
-    @PostMapping("/attempt")
-    public ResponseEntity<HttpStatus> attemptDelivery(@RequestBody AttemptDeliveryRequest attemptDeliveryRequest){
+    @PostMapping("/attempt/{id}")   // TODO: 25.01.2023 Deliverer
+    @PreAuthorize("hasAuthority('DELIVERER')")
+    public ResponseEntity<HttpStatus> attemptDelivery(@PathVariable("id") String id, @RequestBody AttemptDeliveryRequest attemptDeliveryRequest){
         try{
-            deliveryCrudService.attemptDelivery(attemptDeliveryRequest);
+            deliveryCrudService.attemptDelivery(id, attemptDeliveryRequest);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (IllegalAccessException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+
 
 }

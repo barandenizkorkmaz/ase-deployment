@@ -1,6 +1,8 @@
 import axios from "axios";
 import { Component } from "react";
 import Table from 'react-bootstrap/Table';
+import { loadState } from "../../../../localstorage/LocalStorage";
+import { instanceOfAxious } from "../../../../network/requests";
 
 export class ListDeliveryForDeliverer extends Component {
 
@@ -9,11 +11,11 @@ export class ListDeliveryForDeliverer extends Component {
         this.state = {
             deliveries: [],
         }
-        this.getDeliveries("sadasd");
+        this.getDeliveries(loadState("email"));
     }
 
     getDeliveries(delivererId) {
-        axios.get("/delivery/list/deliverer/"+delivererId)
+        instanceOfAxious.get("/delivery/list/deliverer/"+delivererId)
             .then(
                 (response) => {
                     this.setState(
@@ -35,9 +37,9 @@ export class ListDeliveryForDeliverer extends Component {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Deliverer Id</th>
-                        <th>Box Id</th>
-                        <th>Customer Id</th>
+                        <th>Deliverer Email</th>
+                        <th>Box Name</th>
+                        <th>Customer Email</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -46,9 +48,9 @@ export class ListDeliveryForDeliverer extends Component {
                         return (
                             <tr key={el["id"]}>
                                 <td>{el["id"]}</td>
-                                <td>{el["delivererId"]}</td>
-                                <td>{el["boxId"]}</td>
-                                <td>{el["customerId"]}</td>
+                                <td>{el["delivererEmail"]}</td>
+                                <td>{el["boxName"]}</td>
+                                <td>{el["customerEmail"]}</td>
                                 <td>{el["deliveryStatus"]}</td>
                             </tr>
                         )

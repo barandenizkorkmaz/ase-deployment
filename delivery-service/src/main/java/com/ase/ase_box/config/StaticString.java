@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class StaticString {
 
-    public static String mailContent = "Dear User,\n {1} \n Best Regards";
+    public static String mailContent = "Dear User,\nYour order status {1} \n Best Regards";
 
     public static String replaceString(String s1,String s2){
         return s1.replace("{1}",s2);

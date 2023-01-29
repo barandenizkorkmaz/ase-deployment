@@ -2,15 +2,21 @@ package com.ase.authenticationservice.service;
 
 import com.ase.authenticationservice.data.dto.UserDto;
 import com.ase.authenticationservice.data.entity.User;
+import com.ase.authenticationservice.data.entity.UserType;
 import com.ase.authenticationservice.data.request.UserRequest;
+import com.ase.authenticationservice.security.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
+import javax.persistence.EntityExistsException;
 import java.util.List;
 
 import static com.ase.authenticationservice.data.mapper.UserMapper.USER_MAPPER;
@@ -33,18 +39,15 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public void updateUser(String id, UserRequest updateRequest){
-        boolean isValid = userEntityService.isUpdateUserValid(
-                id,
-                updateRequest.getEmail() // New requested email
-        );
-        if(isValid){
-            User user = userEntityService.getUserById(id);
-            USER_MAPPER.updateUser(user, updateRequest);
-            user.setPassword(bcryptPasswordEncoder.encode(updateRequest.getPassword()));
-            userEntityService.updateUser(user);
+    public void updateUser(String email, UserRequest updateRequest){
+        User user = userEntityService.getUser(email);
+        if(!email.equals(updateRequest.getEmail()) && userEntityService.isUserExists(updateRequest.getEmail())){
+            throw new EntityExistsException("User with email " + updateRequest.getEmail() + "already exists");
         }
-        else throw new IllegalArgumentException();;
+        USER_MAPPER.updateUser(user, updateRequest);
+        user.setPassword(bcryptPasswordEncoder.encode(updateRequest.getPassword()));
+        userEntityService.deleteUser(email);
+        userEntityService.updateUser(user);
     }
 
     @Override
@@ -52,15 +55,34 @@ public class UserService implements IUserService{
         return USER_MAPPER.convertToUserDtoList(userEntityService.getUsers());
     }
 
+    private User getCurrentJwtUserDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User jwtUserDetails = null;
+        if (authentication != null && authentication.getPrincipal() != null){
+            UserType userType = UserType.valueOf(authentication.getAuthorities().toArray()[0].toString());
+            jwtUserDetails = User.builder().userType(userType).email(authentication.getPrincipal().toString()).build();
+        }
+        return jwtUserDetails;
+    }
+
     @Override
-    public UserDto getUser(String id) {
-        User user = userEntityService.getUserById(id);
+    public UserDto getUser(String email) {
+        User user = userEntityService.getUser(email);
+        User customUserDetails = getCurrentJwtUserDetails();
+        if(!customUserDetails.getEmail().equals(email) && (customUserDetails.getUserType() != UserType.DISPATCHER)){
+            throw new NotFoundException("User not found");
+        }
         return USER_MAPPER.convertToUserDto(user);
     }
 
+    @Override
+    public List<String> getEmailsByUserType(String userType) {
+        return userEntityService.getEmailsByUserType(userType);
+    }
 
-    public void deleteUserById(String userId) {
-        userEntityService.deleteUserById(userId);
+    @Override
+    public void deleteUser(String email) {
+        userEntityService.deleteUser(email);
     }
 
 }

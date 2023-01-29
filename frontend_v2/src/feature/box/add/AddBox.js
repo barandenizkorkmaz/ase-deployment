@@ -4,6 +4,7 @@ import { Row, Container } from 'react-bootstrap';
 import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
+import { instanceOfAxious } from '../../../network/requests';
 
 
 export class AddBox extends Component {
@@ -12,7 +13,6 @@ export class AddBox extends Component {
         super(props);
         this.state = {
             name: "",
-            raspberryId: "",
             address: ""
         };
         this.handleChangeName = this.handleChangeName.bind(this);
@@ -35,7 +35,7 @@ export class AddBox extends Component {
 
     createBoxRequest(event) {
         event.preventDefault();
-        axios.post("", this.state)
+        instanceOfAxious.post("", this.state)
             .then(
                 (response) => {
                     console.log(response)
@@ -57,10 +57,6 @@ export class AddBox extends Component {
                     <Form.Group className="mb-3" >
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="Enter name" value={this.state.name} onChange={this.handleChangeName} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Raspberry ID</Form.Label>
-                        <Form.Control type="text" placeholder="Enter id" value={this.state.raspberryId} onChange={this.handleChangeRaspberryId} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Address</Form.Label>

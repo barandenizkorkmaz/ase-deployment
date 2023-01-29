@@ -4,6 +4,7 @@ import { Row, Container } from 'react-bootstrap';
 import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
+import { instanceOfAxious } from '../../../network/requests';
 
 
 export class AddUser extends Component {
@@ -36,7 +37,7 @@ export class AddUser extends Component {
     createUserRequest(event) {
         event.preventDefault();
         console.log(this.state);
-        axios.post("", this.state)
+        instanceOfAxious.post("", this.state)
             .then(
                 (response) => {
                     console.log(response)

@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IBoxCrudService {
 
-    CreateBoxResponse createBox(CreateBoxRequest createBoxRequest);
+    CreateBoxResponse createBox(CreateBoxRequest createBoxRequest) throws Exception;
 
     UpdateBoxResponse updateBox(String id, UpdateBoxRequest updateBoxRequest) throws Exception;
 
@@ -21,6 +21,8 @@ public interface IBoxCrudService {
     BoxDto getBoxById(String boxId);
 
     List<BoxDto> getAllBoxes();
+
+    List<BoxDto> getBoxesByDelivererEmail(String email) throws Exception;
 
     void unlockBox(String id, BoxRequest unlockBoxRequest) throws IllegalAccessException;
 

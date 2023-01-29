@@ -1,8 +1,6 @@
 package com.ase.ase_box.service.box;
 
 import com.ase.ase_box.data.entity.Box;
-import com.ase.ase_box.data.request.box.IsCreateBoxValidRequest;
-import com.ase.ase_box.data.request.box.IsUpdateBoxValidRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +17,12 @@ public interface IBoxEntityService {
 
     List<Box> getAllBoxes();
 
+    List<Box> getAllBoxesByDelivererEmail(String email)  throws Exception ;
+
     boolean isBoxExists(String id);
 
-    boolean isCreateBoxValid(IsCreateBoxValidRequest isCreateBoxValidRequest);
+    boolean isCreateBoxValid(String name);
 
-    boolean isUpdateBoxValid(String id, IsUpdateBoxValidRequest isUpdateBoxValidRequest);
+    boolean isUpdateBoxValid(String id, String name);
 
 }

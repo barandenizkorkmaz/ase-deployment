@@ -1,6 +1,8 @@
 import axios from "axios";
 import { Component } from "react";
 import Table from 'react-bootstrap/Table';
+import { loadState } from "../../../../../localstorage/LocalStorage";
+import { instanceOfAxious } from "../../../../../network/requests";
 
 export class ListActiveDeliveryForCustomer extends Component {
 
@@ -9,11 +11,11 @@ export class ListActiveDeliveryForCustomer extends Component {
         this.state = {
             deliveries: [],
         }
-        this.getDeliveries("dasdasd");
+        this.getDeliveries(loadState("email"));
     }
 
     getDeliveries(customerId) {
-        axios.get("/delivery/list/customer/active/"+customerId)
+        instanceOfAxious.get("/delivery/list/customer/active/"+customerId)
             .then(
                 (response) => {
                     this.setState(
@@ -35,9 +37,9 @@ export class ListActiveDeliveryForCustomer extends Component {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Deliverer Id</th>
+                        <th>Deliverer Email</th>
                         <th>Box Id</th>
-                        <th>Customer Id</th>
+                        <th>Customer Email</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -46,9 +48,9 @@ export class ListActiveDeliveryForCustomer extends Component {
                         return (
                             <tr key={el["id"]}>
                                 <td>{el["id"]}</td>
-                                <td>{el["delivererId"]}</td>
+                                <td>{el["delivererEmail"]}</td>
                                 <td>{el["boxId"]}</td>
-                                <td>{el["customerId"]}</td>
+                                <td>{el["customerEmail"]}</td>
                                 <td>{el["deliveryStatus"]}</td>
                             </tr>
                         )

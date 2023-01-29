@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateBoxRequest {
     private String name;
-    private String raspberryId;
     private String address;
 }

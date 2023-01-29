@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class DeliveryDto {
     private String id;
     private String boxId;
-    private String delivererId;
-    private String customerId;
+    private String delivererEmail;
+    private String customerEmail;
     private DeliveryStatus deliveryStatus;
 
 }

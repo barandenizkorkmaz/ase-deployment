@@ -22,20 +22,16 @@ public class BoxCrudService implements IBoxCrudService {
     private final IDeliveryEntityService deliveryEntityService;
 
     @Override
-    public CreateBoxResponse createBox(CreateBoxRequest createBoxRequest) {
-        boolean isValid = boxEntityService.isCreateBoxValid(
-                IsCreateBoxValidRequest.builder()
-                        .name(createBoxRequest.getName())
-                        .raspberryId(createBoxRequest.getRaspberryId())
-                        .build()
-        );
+    public CreateBoxResponse createBox(CreateBoxRequest createBoxRequest) throws Exception {
+        boolean isValid = boxEntityService.isCreateBoxValid(createBoxRequest.getName());
         if(isValid){
             boxEntityService.createBox(BOX_MAPPER.createBox(createBoxRequest));
+            return CreateBoxResponse
+                    .builder()
+                    .isSuccessful(isValid)
+                    .build();
         }
-        return CreateBoxResponse
-                .builder()
-                .isSuccessful(isValid)
-                .build();
+        else throw new Exception();
     }
 
     public List<BoxDto> getAllBoxes() {
@@ -64,15 +60,13 @@ public class BoxCrudService implements IBoxCrudService {
                 .build();
     }
 
+    public List<BoxDto> getBoxesByDelivererEmail(String email) throws Exception {
+        return BOX_MAPPER.convertToBoxDtoList(boxEntityService.getAllBoxesByDelivererEmail(email));
+    }
+
     @Override
     public UpdateBoxResponse updateBox(String id, UpdateBoxRequest updateBoxRequest) throws Exception {
-        boolean isValid = boxEntityService.isUpdateBoxValid(
-                id,
-                IsUpdateBoxValidRequest.builder()
-                        .name(updateBoxRequest.getName())
-                        .raspberryId(updateBoxRequest.getRaspberryId())
-                        .build()
-        );
+        boolean isValid = boxEntityService.isUpdateBoxValid(id, updateBoxRequest.getName());
         if(isValid){
             Box box = boxEntityService.getBoxById(id)
                     .orElseThrow(IllegalArgumentException::new);

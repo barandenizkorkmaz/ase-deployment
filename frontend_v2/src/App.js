@@ -20,33 +20,48 @@ import { ListDeliveryForDeliverer } from './feature/delivery/list/deliverer/List
 import { ListActiveDeliveryForCustomer } from './feature/delivery/list/customer/active/ListActiveDeliveryForCustomer';
 import { ListPastDeliveryForCustomer } from './feature/delivery/list/customer/past/ListPastDeliveryForCustomer';
 import { ListUser } from './feature/user/list/ListUser';
+import { loadState } from './localstorage/LocalStorage';
+import { ListBoxFroDeliverer } from './feature/box/list/deliverer/ListBoxForDeliverer';
+
 
 
 function App() {
+
+  const getComponent = (component) => {
+    let response = loadState("login");
+    if(response == true){
+      return component;
+    }else{
+      return <LoginComponent />;
+    }
+  }
+
   return (
     <BrowserRouter>
       <AseLayout>
         <Routes>
-          <Route exact path="/" element={<LoginComponent />} />
-          <Route exact path="/home" element={<h1>Deneme</h1>} />
+          <Route exact path="/login" element={<LoginComponent />} />
+          <Route exact path="/home" element={getComponent(<h1>Deneme</h1>)} />
           <Route exact path="/list/delivery" element={<h1>Deneme</h1>} />
-          <Route exact path="/delivery/list/dispatcher/all" element={<ListDeliveryForDispatcher/>} />
-          <Route exact path="/box/list/all" element={<ListBoxForDispatcher/>} />
-          <Route exact path="/list/deliverer" element={<ListDeliveryForDeliverer/>} />
-          <Route exact path="/list/customer/active" element={<ListActiveDeliveryForCustomer/>} />
-          <Route exact path="/list/user" element={<ListUser/>} />
-          <Route exact path="/list/customer/past" element={<ListPastDeliveryForCustomer/>} />
-          <Route exact path="/delivery/create" element={<AddDelivery />} />
-          <Route exact path="/delivery/track" element={<TrackDelivery />} />
-          <Route exact path="/box/create" element={<AddBox />} />
-          <Route exact path="/user/register" element={<AddUser />} />
-          <Route exact path="/box/delete" element={<DeleteBox />} />
-          <Route exact path="/delivery/delete" element={<DeleteDelivery />} />
-          <Route exact path="/user/delete" element={<DeleteUser />} />
-          <Route exact path="/delivery/update" element={<UpdateDelivery />} />
-          <Route exact path="/box/update" element={<UpdateBox />} />
-          <Route exact path="/user/update" element={<UpdateUser />} />
-          <Route exact path="/scanqr" element={<ScanQr/>} />
+          <Route exact path="/deliverer/box/list" element={<ListBoxFroDeliverer/>}/>
+          <Route exact path="/delivery/list/dispatcher/all" element={getComponent(<ListDeliveryForDispatcher />)} />
+          <Route exact path="/box/list/all" element={getComponent(<ListBoxForDispatcher />)} />
+          <Route exact path="/list/deliverer" element={getComponent(<ListDeliveryForDeliverer />)} />
+          <Route exact path="/list/customer/active" element={getComponent(<ListActiveDeliveryForCustomer />)} />
+          <Route exact path="/list/user" element={getComponent(<ListUser />)} />
+          <Route exact path="/list/customer/past" element={getComponent(<ListPastDeliveryForCustomer />)} />
+          <Route exact path="/delivery/create" element={getComponent(<AddDelivery />)} />
+          <Route exact path="/delivery/track" element={getComponent(<TrackDelivery />)} />
+          <Route exact path="/box/create" element={getComponent(<AddBox/>)} />
+          <Route exact path="/user/register" element={getComponent(<AddUser />)} />
+          <Route exact path="/box/delete" element={getComponent(<DeleteBox />)} />
+          <Route exact path="/delivery/delete" element={getComponent(<DeleteDelivery />)} />
+          <Route exact path="/user/delete" element={getComponent(<DeleteUser />)}/>
+          <Route exact path="/delivery/update" element={getComponent(<UpdateDelivery />)} />
+          <Route exact path="/box/update" element={getComponent(<UpdateBox />)} />
+          <Route exact path="/user/update" element={getComponent(<UpdateUser />)} />
+          <Route exact path="/scanqr" element={getComponent(<ScanQr />)} />
+          <Route exact path="/logout" element={<h1>Bye ...</h1>} />
         </Routes>
       </AseLayout>
     </BrowserRouter>

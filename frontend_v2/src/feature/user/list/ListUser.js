@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Component } from "react";
 import Table from 'react-bootstrap/Table';
+import { instanceOfAxious } from "../../../network/requests";
 
 export class ListUser extends Component {
 
@@ -13,7 +14,7 @@ export class ListUser extends Component {
     }
 
     getUsers() {
-        axios.post("/user/list/all")
+        instanceOfAxious.get("/user/list/all")
             .then(
                 (response) => {
                     this.setState(
@@ -51,7 +52,6 @@ export class ListUser extends Component {
                     })}
                 </tbody>
             </Table>
-
         )
     }
 }

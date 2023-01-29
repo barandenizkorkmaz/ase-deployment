@@ -2,10 +2,12 @@ version: "3"
 
 services:
   mongo:
-    image: "mongo"
+    image: mongo:latest
     restart: always
+    volumes:
+      - ./mongo/scripts/:/docker-entrypoint-initdb.d/:ro
     ports:
-      - "27017:27017"
+      - 27017:27017
 
   registry-service:
     container_name: registry-service
@@ -14,7 +16,7 @@ services:
       context: ./registry-service
       dockerfile: Dockerfile
     ports:
-      - "8761:8761"
+      - 8761:8761
 
   gateway:
     container_name: gateway
@@ -23,7 +25,7 @@ services:
       context: ./gateway
       dockerfile: Dockerfile
     ports:
-      - "10789:10789"
+      - 10789:10789
 
   authentication-service:
     container_name: authentication-service
@@ -32,7 +34,12 @@ services:
       context: ./authentication-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - 8081:8081
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_HOST=mongo
+    command: ./script.sh
 
   delivery-service:
     container_name: delivery-service
@@ -41,7 +48,9 @@ services:
       context: ./delivery-service
       dockerfile: Dockerfile
     ports:
-      - "8082:8082"
+      - 8082:8082
+    depends_on:
+      - mongo
 
   frontend:
     container_name: frontend
@@ -53,6 +62,6 @@ services:
       - '.:/app'
       - '/app/node_modules'
     ports:
-      - "3000:3000"
+      - 3000:3000
     environment:
       - CHOKIDAR_USEPOLLING=true

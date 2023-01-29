@@ -6,6 +6,7 @@ import com.ase.ase_box.data.entity.Delivery;
 import com.ase.ase_box.data.request.box.UpdateBoxRequest;
 import com.ase.ase_box.data.request.delivery.CreateDeliveryRequest;
 import com.ase.ase_box.data.request.delivery.UpdateDeliveryRequest;
+import com.ase.ase_box.data.response.delivery.GetDeliveriesResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
@@ -24,6 +25,8 @@ public interface DeliveryMapper {
     DeliveryDto convertToDeliveryDto(Delivery delivery);
 
     List<DeliveryDto> convertToDeliveryDtoList(List<Delivery> deliveries);
+
+    GetDeliveriesResponse convertToGetDeliveryResponse(Delivery delivery);
 
     void updateDelivery(@MappingTarget Delivery delivery, UpdateDeliveryRequest updateDeliveryRequest);
 }

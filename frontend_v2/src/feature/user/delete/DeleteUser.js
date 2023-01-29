@@ -1,9 +1,9 @@
 import { Component } from 'react'
-import Form from 'react-bootstrap/Form';
+import Table from 'react-bootstrap/Table';
 import { Row, Container } from 'react-bootstrap';
-import React, { useState } from 'react'
+import React from 'react'
 import Button from 'react-bootstrap/Button';
-import axios from "axios";
+import { instanceOfAxious } from '../../../network/requests';
 
 
 export class DeleteUser extends Component {
@@ -11,33 +11,47 @@ export class DeleteUser extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: ""
+            id: "",
+            users: []
         };
         this.handleChangeId = this.handleChangeId.bind(this);
         this.deleteUserRequest = this.deleteUserRequest.bind(this);
+        this.getUsers();
+    }
+
+    getUsers() {
+        instanceOfAxious.get("/user/list/all")
+            .then(
+                (response) => {
+                    this.setState(
+                        { users: [...response.data] }
+                    )
+                    console.log(this.state.deliveries);
+                }
+            )
+            .catch(
+                (error) => {
+                    console.log(error)
+                }
+            )
     }
 
     handleChangeId(event) {
         this.setState({ id: event.target.value });
     }
 
-    deleteUserRequest(event) {
-        event.preventDefault();
-        const id = this.state.id
-        console.log(id)
-        axios.post("delete/" + id)
+    deleteUserRequest(id) {
+        instanceOfAxious.post("delete/" + id)
             .then(
                 (response) => {
                     console.log(response)
-                    if(response.data.successful){
-                        alert(`User deleted.`)
-                    }else{
-                        alert(`User not found.`)
-                    }
+                    alert(`User deleted.`)
+                    window.location.reload(false);
                 }
             )
             .catch(
                 (error) => {
+                    alert(`User not found.`)
                     console.log(error)
                 }
             )
@@ -47,17 +61,32 @@ export class DeleteUser extends Component {
     render() {
         return <Container >
             <Row classId="justify-content-md-center mt-5" xs={6} md={2}>
-                <Form onSubmit={this.deleteUserRequest}>
-                    <Form.Group classId="mb-1" >
-                        <Form.Label>Id</Form.Label>
-                        <Form.Control type="text" placeholder="Enter id" value={this.state.id} onChange={this.handleChangeId} />
-                    </Form.Group>
-                    <div classId="d-grid gap-2">
-                        <Button variant="primary" type="submit" size="lg">
-                            Delete
-                        </Button>
-                    </div>
-                </Form>
+                <Table className="mt-5 justify-content-md-center" striped bordered hover>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Email</th>
+                            <th>User Type</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.users.map((el) => {
+                            return (
+                                <tr key={el["id"]}>
+                                    <td>{el["id"]}</td>
+                                    <td>{el["email"]}</td>
+                                    <td>{el["userType"]}</td>
+                                    <td>
+                                        <Button onClick={() => this.deleteUserRequest(el["email"])} variant="primary" type="submit" size="lg">
+                                            Delete
+                                        </Button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </Table>
             </Row>
         </Container>
     }

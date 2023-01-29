@@ -7,9 +7,6 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.UUID;
 
 @Data
@@ -24,10 +21,5 @@ public class Box extends BaseEntity {
 
     private String address;
 
-    @Column(unique = true)
-    private String raspberryId;
-
-    // TODO: unique validators don't work but logic is already implemented inside the service.
-    @Column(unique = true)
     private String name;
 }

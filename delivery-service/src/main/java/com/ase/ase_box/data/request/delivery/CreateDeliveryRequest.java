@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateDeliveryRequest {
     private String boxId;
-    private String delivererId;
-    private String customerId;
+    private String delivererEmail;
+    private String customerEmail;
 }
