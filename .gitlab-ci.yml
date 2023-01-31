@@ -19,6 +19,7 @@ image: docker:latest
 
 stages:          # List of stages for jobs, and their order of execution
   - build
+  - publish
   - deploy
 
 build-job-auth:       # This job runs in the build stage, which runs first.
@@ -67,9 +68,9 @@ build-job-frontend:
     - npm run build
     - echo "Build complete."
 
-deploy:
-  stage: deploy
+publish:
+  stage: publish
   script:
-    - echo "Deploy the application..."
-    - sudo docker compose up -d --build
-    - echo "Deploy complete."
+    - echo "Publish the application..."
+    - docker build -t authentication-service ./authentication-service
+    - echo "Publish complete."
