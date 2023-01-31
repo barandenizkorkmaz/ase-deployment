@@ -70,5 +70,5 @@ deploy:
   stage: deploy
   script:
     - echo "Deploy the application..."
-    - docker compose up -d --build
+    - sudo docker compose up -d --build
     - echo "Deploy complete."
