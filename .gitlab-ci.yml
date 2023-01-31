@@ -34,5 +34,5 @@ step-deploy-production:
   stage: deploy
   script:
     - echo "Deploy the code..."
-    - sudo docker compose up -d docker-compose.yml --build
+    - docker compose up -d docker-compose.yml --build
     - echo "Deploy end."
