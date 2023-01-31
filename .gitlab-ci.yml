@@ -25,14 +25,50 @@ build-job-auth:       # This job runs in the build stage, which runs first.
   stage: build
   image: maven:3.8-openjdk-17
   script:
-    - echo "Compiling the code..."
+    - echo "Building the service..."
     - cd ./authentication-service
-    - mvn clean compile package
-    - echo "Compile complete."
+    - mvn clean install
+    - echo "Build complete."
 
-step-deploy-production:
+build-job-delivery:
+  stage: build
+  image: maven:3.8-openjdk-17
+  script:
+    - echo "Building the service..."
+    - cd ./delivery-service
+    - mvn clean install
+    - echo "Build complete."
+
+build-job-registry:
+  stage: build
+  image: maven:3.8-openjdk-17
+  script:
+    - echo "Building the service..."
+    - cd ./registry-service
+    - mvn clean install
+    - echo "Build complete."
+
+build-job-gateway:
+  stage: build
+  image: maven:3.8-openjdk-17
+  script:
+    - echo "Building the service..."
+    - cd ./gateway
+    - mvn clean install
+    - echo "Build complete."
+
+build-job-frontend:
+  stage: build
+  image: node:latest
+  script:
+    - echo "Building the service"
+    - cd ./frontend_v2
+    - npm run build
+    - echo "Build complete."
+
+deploy:
   stage: deploy
   script:
-    - echo "Deploy the code..."
-    - docker compose up -d docker-compose.yml --build
-    - echo "Deploy end."
+    - echo "Deploy the application..."
+    - docker compose up -d --build
+    - echo "Deploy complete."
