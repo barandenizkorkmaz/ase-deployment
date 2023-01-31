@@ -59,11 +59,12 @@ build-job-gateway:
 
 build-job-frontend:
   stage: build
-  image: node:latest
+  image: node
   script:
     - echo "Building the service"
     - cd ./frontend_v2
-    - npm run build
+    - npm install
+    - npm build
     - echo "Build complete."
 
 deploy:
