@@ -25,8 +25,8 @@ build-job-auth:       # This job runs in the build stage, which runs first.
   stage: compile
   script:
     - echo "Compiling the code..."
-    - mvn clean
-    - mvn compile
+    - cd ./authentication-service
+    - mvn clean compile
     - echo "Compile complete."
 
 package-job:      # This job runs in the deploy stage.
