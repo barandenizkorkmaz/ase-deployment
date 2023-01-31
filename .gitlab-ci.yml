@@ -64,7 +64,7 @@ build-job-frontend:
     - echo "Building the service"
     - cd ./frontend_v2
     - npm install
-    - npm build
+    - npm run build
     - echo "Build complete."
 
 deploy:
