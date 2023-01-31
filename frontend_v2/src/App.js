@@ -44,7 +44,9 @@ function App() {
       <AseLayout>
         <Routes>
           <Route exact path="/login" element={<LoginComponent />} />
-          <Route exact path="/home" element={getComponent(<h1>Deneme</h1>)} />
+          <Route exact path="/home" element={getComponent(<div className="px-4 py-5 my-5 text-center">
+              <h1 className="display-5 fw-bold">Welcome to ASE Delivery!</h1>
+          </div>)} />
           <Route exact path="/list/delivery" element={<h1>Deneme</h1>} />
           <Route exact path="/deliverer/box/list" element={<ListBoxFroDeliverer />} />
           <Route exact path="/delivery/list/dispatcher/all" element={getComponent(<ListDeliveryForDispatcher />)} />
