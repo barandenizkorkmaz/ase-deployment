@@ -18,21 +18,20 @@
 image: maven:3.6.3-jdk-17
 
 stages:          # List of stages for jobs, and their order of execution
-  - compile
-  - package
+  - build
+  - deploy
 
 build-job-auth:       # This job runs in the build stage, which runs first.
-  stage: compile
+  stage: build
   script:
     - echo "Compiling the code..."
     - cd ./authentication-service
-    - mvn clean compile
+    - mvn clean compile package
     - echo "Compile complete."
 
-package-job:      # This job runs in the deploy stage.
-  stage: package  # It only runs when *both* jobs in the test stage complete successfully.
-  environment: production
+step-deploy-production:
+  stage: deploy
   script:
-    - echo "Package application..."
-    - mvn package
-    - echo "Package successfully build."
+    - echo "Deploy the code..."
+    - sudo docker compose up -d docker-compose.yml --build
+    - echo "Deploy end."
