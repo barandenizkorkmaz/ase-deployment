@@ -66,6 +66,8 @@ services:
     volumes:
       - '.:/app'
       - '/app/node_modules'
+    depends_on:
+      - gateway
     ports:
       - 3000:3000
     environment:
