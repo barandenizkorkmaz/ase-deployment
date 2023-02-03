@@ -10,7 +10,7 @@ export class ScanQr extends Component {
         super(props)
         this.state = {
             delay: 5000,
-            result: 'Pleare Scan a Qr',
+            result: 'Please Scan a Qr',
             requestSent: false
         }
 
