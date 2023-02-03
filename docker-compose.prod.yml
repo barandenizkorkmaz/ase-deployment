@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - 27017:27017
+    networks:
+      - my-network
 
   registry-service:
     container_name: registry-service
@@ -13,6 +15,8 @@ services:
     restart: always
     ports:
       - 8761:8761
+    networks:
+      - my-network
 
   gateway:
     container_name: gateway
@@ -20,6 +24,10 @@ services:
     restart: always
     ports:
       - 10789:10789
+    depends_on:
+      - registry-service
+    networks:
+      - my-network
 
   authentication-service:
     container_name: authentication-service
@@ -29,8 +37,11 @@ services:
       - 8081:8081
     depends_on:
       - mongo
+      - registry-service
     environment:
       - MONGO_HOST=mongo
+    networks:
+      - my-network
 
   delivery-service:
     container_name: delivery-service
@@ -40,6 +51,9 @@ services:
       - 8082:8082
     depends_on:
       - mongo
+      - registry-service
+    networks:
+      - my-network
 
   frontend:
     container_name: frontend
@@ -47,5 +61,13 @@ services:
     restart: always
     ports:
       - 3000:3000
+    depends_on:
+      - gateway
     environment:
       - CHOKIDAR_USEPOLLING=true
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

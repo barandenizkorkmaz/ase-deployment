@@ -8,6 +8,8 @@ services:
       - ./mongo/scripts/:/docker-entrypoint-initdb.d/:ro
     ports:
       - 27017:27017
+    networks:
+      - my-network
 
   registry-service:
     container_name: registry-service
@@ -15,9 +17,11 @@ services:
     build:
       context: ./registry-service
       dockerfile: Dockerfile
-    image: barandenizkorkmaz/deployment-registry-service
+    image: barandenizkorkmaz/deployment-registry-service:latest
     ports:
       - 8761:8761
+    networks:
+      - my-network
 
   gateway:
     container_name: gateway
@@ -25,9 +29,13 @@ services:
     build:
       context: ./gateway
       dockerfile: Dockerfile
-    image: barandenizkorkmaz/deployment-gateway
+    image: barandenizkorkmaz/deployment-gateway:latest
     ports:
       - 10789:10789
+    depends_on:
+      - registry-service
+    networks:
+      - my-network
 
   authentication-service:
     container_name: authentication-service
@@ -35,14 +43,16 @@ services:
     build:
       context: ./authentication-service
       dockerfile: Dockerfile
-    image: barandenizkorkmaz/deployment-authentication-service
+    image: barandenizkorkmaz/deployment-authentication-service:latest
     ports:
       - 8081:8081
     depends_on:
       - mongo
+      - registry-service
     environment:
       - MONGO_HOST=mongo
-    command: ./script.sh
+    networks:
+      - my-network
 
   delivery-service:
     container_name: delivery-service
@@ -50,11 +60,14 @@ services:
     build:
       context: ./delivery-service
       dockerfile: Dockerfile
-    image: barandenizkorkmaz/deployment-delivery-service
+    image: barandenizkorkmaz/deployment-delivery-service:latest
     ports:
       - 8082:8082
     depends_on:
       - mongo
+      - registry-service
+    networks:
+      - my-network
 
   frontend:
     container_name: frontend
@@ -62,7 +75,7 @@ services:
     build:
       context: ./frontend_v2
       dockerfile: Dockerfile
-    image: barandenizkorkmaz/deployment-frontend
+    image: barandenizkorkmaz/deployment-frontend:latest
     volumes:
       - '.:/app'
       - '/app/node_modules'
@@ -72,3 +85,9 @@ services:
       - 3000:3000
     environment:
       - CHOKIDAR_USEPOLLING=true
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
