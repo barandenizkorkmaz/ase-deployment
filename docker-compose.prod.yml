@@ -4,6 +4,8 @@ services:
   mongo:
     image: mongo:latest
     restart: always
+    volumes:
+      - ./mongo/scripts/:/docker-entrypoint-initdb.d/:ro
     ports:
       - 27017:27017
     networks:
