@@ -8,8 +8,6 @@ This file contains the instructions for running the ASE Delivery App for the cou
 
 - Baran Deniz Korkmaz
 - Doğukan Ali Gündoğan
-- Didem Öngü
-
 
 
 ## Program Specifications
